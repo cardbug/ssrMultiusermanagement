@@ -39,7 +39,7 @@ read -p "输入用户名： " uname
 uport=`head -200 /dev/urandom | cksum | awk -F" " '{ print $2 }'`
 read -p "输入密码： " upass
 um1="none"
-ux1="auth_chain_b"
+ux1="auth_chain_a"
 uo1="tls1.2_ticket_auth"
 while :; do echo
 	read -p "输入流量限制(只需输入数字，单位：GB)： " ut
