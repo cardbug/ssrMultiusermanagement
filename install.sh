@@ -72,7 +72,9 @@ ldconfig
 cd $workdir && rm -rf libsodium-$LIBSODIUM_VER.tar.gz libsodium-$LIBSODIUM_VER
 cd /usr/local
 git clone https://github.com/Readour/shadowsocksr.git
+cd ./shadowsocksr
 git manyuser
+git pull
 if [ $1 == "develop" ];then
     git checkout stack/dev
 fi
@@ -89,17 +91,19 @@ if [ -e /usr/local/bin/ssr ];then
 	echo "开始部署"
 	cd /usr/local/shadowsocksr
 	git pull
-    git manyuser
-    if [ $1 == "develop" ];then
+    git checkout manyuser
+    if [[ $1 == "develop" ]];then
         git checkout stack/dev
     fi
 fi
 cd /usr/local
 git clone https://github.com/Readour/AR-B-P-B.git
+cd AR-B-P-B
 git checkout master
-if [ $1 == "develop" ];then
+if [[ $1 == "develop" ]];then
     git checkout develop
 fi
+cd ..
 mv AR-B-P-B SSR-Bash-Python
 cd /usr/local/shadowsocksr
 bash initcfg.sh
