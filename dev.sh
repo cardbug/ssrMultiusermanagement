@@ -102,7 +102,7 @@ if [[ ! -e bbr.sh ]]; then
 fi
 }
 if [[ $devc == 5 ]];then 
-	[[ $OS = "CentOS" ]] && echo "本脚本不支持 CentOS系统 BBR !" && ssr
+	[[ $OS = "CentOS" ]] && echo "本脚本不支持 CentOS系统 BBR !" && exit 1
 	echo "你要做什么？"
 	echo "1.安装 BBR"
 	echo "————————"
