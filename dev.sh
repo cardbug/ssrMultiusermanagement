@@ -266,21 +266,21 @@ if [[ $devc == 7 ]];then
 		fi
 	fi
 	if [[ $uls == 3 ]];then
-		[[ ! -e /appex/bin/serverSpeeder.sh ]] && echo -e "${Error} 没有安装 LotServer，请检查 !" && exit 1
+		[[ ! -e /appex/bin/serverSpeeder.sh ]] && echo "没有安装 LotServer，请检查 !" && exit 1
 		/appex/bin/serverSpeeder.sh start
 		/appex/bin/serverSpeeder.sh status
 	fi
 	if [[ $uls == 4 ]];then
-		[[ ! -e /appex/bin/serverSpeeder.sh ]] && echo -e "${Error} 没有安装 LotServer，请检查 !" && exit 1
+		[[ ! -e /appex/bin/serverSpeeder.sh ]] && echo "没有安装 LotServer，请检查 !" && exit 1
 		/appex/bin/serverSpeeder.sh stop
 	fi
 	if [[ $uls == 5 ]];then
-		[[ ! -e /appex/bin/serverSpeeder.sh ]] && echo -e "${Error} 没有安装 LotServer，请检查 !" && exit 1
+		[[ ! -e /appex/bin/serverSpeeder.sh ]] && echo "没有安装 LotServer，请检查 !" && exit 1
 		/appex/bin/serverSpeeder.sh restart
 		/appex/bin/serverSpeeder.sh status
 	fi
 	if [[ $uls == 6 ]];then
-		[[ ! -e /appex/bin/serverSpeeder.sh ]] && echo -e "${Error} 没有安装 LotServer，请检查 !" && exit 1
+		[[ ! -e /appex/bin/serverSpeeder.sh ]] && echo "没有安装 LotServer，请检查 !" && exit 1
 		/appex/bin/serverSpeeder.sh status
 	fi
 fi
