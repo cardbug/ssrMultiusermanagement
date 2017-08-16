@@ -37,10 +37,12 @@ echo "2.一键封禁BT下载，SPAM邮件流量（无法撤销）"
 echo "3.防止暴力破解SS连接信息 (重启后失效)"
 echo "4.布署ss-panel(有风险!)"
 echo "5.BBR 控制台"
+echo "6.锐速 控制台"
+echo "7.LotServer 控制台"
 while :; do echo
 	read -p "请选择： " devc
 	[ -z "$devc" ] && ssr && break
-	if [[ ! $devc =~ ^[1-5]$ ]]; then
+	if [[ ! $devc =~ ^[1-7]$ ]]; then
 		echo "输入错误! 请输入正确的数字!"
 	else
 		break	
@@ -88,6 +90,7 @@ if [[ $devc == 4 ]];then
 fi
 bbrcheck(){
 cd /usr/local/SSR-Bash-Python
+#GitHub:https://github.com/ToyoDAdoubi
 if [[ ! -e bbr.sh ]]; then
 	echo "没有发现 BBR脚本，开始下载..."
 	if ! wget -N --no-check-certificate https://raw.githubusercontent.com/ToyoDAdoubi/doubi/master/bbr.sh; then
@@ -145,5 +148,139 @@ if [[ $devc == 5 ]];then
 	if [[ $ubbr == 4 ]];then
 		bbrcheck
 		bash bbr.sh status
+	fi
+fi
+install_rz(){
+	[[ -e /serverspeeder/bin/serverSpeeder.sh ]] && echo "锐速(Server Speeder) 已安装 !" && ssr
+	cd /usr/local/SSR-Bash-Python
+	#借用91yun.rog的开心版锐速
+	wget -N --no-check-certificate https://raw.githubusercontent.com/91yun/serverspeeder/master/serverspeeder.sh
+	[[ ! -e "serverspeeder.sh" ]] && echo "锐速安装脚本下载失败 !" && ssr
+	bash serverspeeder.sh
+	sleep 2s
+	PID=`ps -ef |grep -v grep |grep "serverspeeder" |awk '{print $2}'`
+	if [[ ! -z ${PID} ]]; then
+		rm -rf /usr/local/SSR-Bash-Python/serverspeeder.sh
+		rm -rf /usr/local/SSR-Bash-Python/91yunserverspeeder
+		rm -rf /usr/local/SSR-Bash-Python/91yunserverspeeder.tar.gz
+		echo "锐速(Server Speeder) 安装完成 !" && exit 0
+	else
+		echo "锐速(Server Speeder) 安装失败 !" && exit 1
+	fi
+}
+if [[ $devc == 6 ]];then
+	echo "你要做什么？"
+	echo "1.安装 锐速"
+	echo "2.卸载 锐速"
+	echo "————————"
+	echo "3.启动 锐速"
+	echo "4.停止 锐速"
+	echo "5.重启 锐速"
+	echo "6.查看 锐速 状态"
+	echo "注意： 锐速和LotServer不能同时安装/启动！"
+	while :; do echo
+	read -p "请选择： " urz
+	[ -z "$urz" ] && ssr && break
+	if [[ ! $urz =~ ^[1-6]$ ]]; then
+		echo "输入错误! 请输入正确的数字!"
+	else
+		break	
+	fi
+	done
+	if [[ $urz == 1 ]];then
+		install_rz
+	fi
+	if [[ $urz == 2 ]];then
+		[[ ! -e /serverspeeder/bin/serverSpeeder.sh ]] && echo "没有安装 锐速(Server Speeder)，请检查 !" && exit 1
+		echo "确定要卸载 锐速(Server Speeder)？[y/N]" && echo
+		stty erase '^H' && read -p "(默认: n):" unyn
+		[[ -z ${unyn} ]] && echo && echo "已取消..." && exit 1
+		if [[ ${unyn} == [Yy] ]]; then
+			chattr -i /serverspeeder/etc/apx*
+			/serverspeeder/bin/serverSpeeder.sh uninstall -f
+			echo && echo "锐速(Server Speeder) 卸载完成 !" && echo
+		fi
+	fi
+	if [[ $urz == 3 ]];then
+		[[ ! -e /serverspeeder/bin/serverSpeeder.sh ]] && echo "没有安装 锐速(Server Speeder)，请检查 !" && exit 1
+		/serverspeeder/bin/serverSpeeder.sh start
+		/serverspeeder/bin/serverSpeeder.sh status
+	fi
+	if [[ $urz == 4 ]];then
+		[[ ! -e /serverspeeder/bin/serverSpeeder.sh ]] && echo "没有安装 锐速(Server Speeder)，请检查 !" && exit 1
+		/serverspeeder/bin/serverSpeeder.sh stop
+	fi
+	if [[ $urz == 5 ]];then
+		[[ ! -e /serverspeeder/bin/serverSpeeder.sh ]] && echo "没有安装 锐速(Server Speeder)，请检查 !" && exit 1
+		/serverspeeder/bin/serverSpeeder.sh restart
+		/serverspeeder/bin/serverSpeeder.sh status
+	fi
+	if [[ $urz == 6 ]];then
+		[[ ! -e /serverspeeder/bin/serverSpeeder.sh ]] && echo "没有安装 锐速(Server Speeder)，请检查 !" && exit 1
+		/serverspeeder/bin/serverSpeeder.sh status
+	fi
+fi
+install_ls(){
+	[[ -e /appex/bin/serverSpeeder.sh ]] && echo "LotServer 已安装 !" && exit 1
+	#Github: https://github.com/0oVicero0/serverSpeeder_Install
+	wget --no-check-certificate -qO /tmp/appex.sh "https://raw.githubusercontent.com/0oVicero0/serverSpeeder_Install/master/appex.sh"
+	[[ ! -e "/tmp/appex.sh" ]] && echo "LotServer 安装脚本下载失败 !" && exit 1
+	bash /tmp/appex.sh 'install'
+	sleep 2s
+	PID=`ps -ef |grep -v grep |grep "appex" |awk '{print $2}'`
+	if [[ ! -z ${PID} ]]; then
+		echo "LotServer 安装完成 !" && exit 1
+	else
+		echo "LotServer 安装失败 !" && exit 1
+	fi
+}
+if [[ $devc == 7 ]];then
+	echo "你要做什么？"
+	echo "1.安装 LotServer"
+	echo "2.卸载 LotServer"
+	echo "————————"
+	echo "3.启动 LotServer"
+	echo "4.停止 LotServer"
+	echo "5.重启 LotServer"
+	echo "6.查看 LotServer 状态"
+	echo "注意： 锐速和LotServer不能同时安装/启动！"
+	while :; do echo
+	read -p "请选择： " uls
+	[ -z "$uls" ] && ssr && break
+	if [[ ! $uls =~ ^[1-6]$ ]]; then
+		echo "输入错误! 请输入正确的数字!"
+	else
+		break	
+	fi
+	done
+	if [[ $uls == 1 ]];then
+		install_ls
+	fi
+	if [[ $uls == 2 ]];then 
+		echo "确定要卸载 LotServer？[y/N]" && echo
+		stty erase '^H' && read -p "(默认: n):" unyn
+		[[ -z ${unyn} ]] && echo && echo "已取消..." && exit 1
+		if [[ ${unyn} == [Yy] ]]; then
+			wget --no-check-certificate -qO /tmp/appex.sh "https://raw.githubusercontent.com/0oVicero0/serverSpeeder_Install/master/appex.sh" && bash /tmp/appex.sh 'uninstall'
+			echo && echo "LotServer 卸载完成 !" && echo
+		fi
+	fi
+	if [[ $uls == 3 ]];then
+		[[ ! -e /appex/bin/serverSpeeder.sh ]] && echo -e "${Error} 没有安装 LotServer，请检查 !" && exit 1
+		/appex/bin/serverSpeeder.sh start
+		/appex/bin/serverSpeeder.sh status
+	fi
+	if [[ $uls == 4 ]];then
+		[[ ! -e /appex/bin/serverSpeeder.sh ]] && echo -e "${Error} 没有安装 LotServer，请检查 !" && exit 1
+		/appex/bin/serverSpeeder.sh stop
+	fi
+	if [[ $uls == 5 ]];then
+		[[ ! -e /appex/bin/serverSpeeder.sh ]] && echo -e "${Error} 没有安装 LotServer，请检查 !" && exit 1
+		/appex/bin/serverSpeeder.sh restart
+		/appex/bin/serverSpeeder.sh status
+	fi
+	if [[ $uls == 6 ]];then
+		[[ ! -e /appex/bin/serverSpeeder.sh ]] && echo -e "${Error} 没有安装 LotServer，请检查 !" && exit 1
+		/appex/bin/serverSpeeder.sh status
 	fi
 fi
