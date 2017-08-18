@@ -1,2 +1,1 @@
-SSR:bc5c9c3 
-SSR-Bash:v1.5
+1.5.2
