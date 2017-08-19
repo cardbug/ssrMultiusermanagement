@@ -163,9 +163,13 @@ if [[ $ec == 3 ]];then
 	echo '7.auth_chain_b'
 	echo '8.auth_chain_c'
 	echo '9.auth_chain_d'
+	echo '10.auth_chain_e'
 	while :; do echo
 	read -p "输入协议方式： " ux
 	if [[ ! $ux =~ ^[1-9]$ ]]; then
+		if [[ $ux == 10 ]]; then
+			break
+		fi
 		echo "输入错误! 请输入正确的数字!"
 	else
 		break	
@@ -209,7 +213,10 @@ if [[ $ec == 3 ]];then
 	fi
 	if [[ $ux == 9 ]];then
 		ux1="auth_chain_d"
-	fi 
+	fi
+	if [[ $ux == 10 ]];then
+		ux1="auth_chain_e"
+	fi
 
 	if [[ $ifprotocolcompatible == y ]]; then
 		ux1=${ux1}"_compatible"

@@ -73,9 +73,13 @@ echo '6.auth_chain_a'
 echo '7.auth_chain_b'
 echo '8.auth_chain_c'
 echo '9.auth_chain_d'
+echo '10.auth_chain_e'
 while :; do echo
 	read -p "输入协议方式： " ux
 	if [[ ! $ux =~ ^[1-9]$ ]]; then
+		if [[ $ux == 10 ]]; then
+			break
+		fi
 		echo "输入错误! 请输入正确的数字!"
 	else
 		break	
@@ -93,7 +97,7 @@ if [[ $ux == 2 ]];then
 	done
 fi
 
-if [[ $ux =~ ^[2,3,4,6,7,8,9]$ ]]; then
+if [[ $ux =~ ^[2,3,4,6,7,8,9,10]$ ]]; then
 	if [[ ! $ifprotocolcompatible == "y" ]]; then
 		while :; do echo 
 			read -p "请输入连接数限制(建议最少 2个): " uparam
@@ -188,6 +192,10 @@ if [[ $ux == 8 ]];then
 fi
 if [[ $ux == 9 ]];then
 	ux1="auth_chain_d"
+fi
+
+if [[ $ux == 10 ]];then
+	ux1="auth_chain_e"
 fi
 
 if [[ $uo == 1 ]];then
