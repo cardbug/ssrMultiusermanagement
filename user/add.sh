@@ -97,7 +97,7 @@ if [[ $ux == 2 ]];then
 	done
 fi
 
-if [[ $ux =~ ^[2,3,4,6,7,8,9,10]$ ]]; then
+if [[ ! $ux =~ ^[1,5]$ ]]; then
 	if [[ ! $ifprotocolcompatible == "y" ]]; then
 		while :; do echo 
 			read -p "请输入连接数限制(建议最少 2个): " uparam
