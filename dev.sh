@@ -39,10 +39,11 @@ echo "4.布署ss-panel(有风险!)"
 echo "5.BBR 控制台"
 echo "6.锐速 控制台"
 echo "7.LotServer 控制台"
+echo "8.UML-LKL(OpenVZ-BBR)安装"
 while :; do echo
 	read -p "请选择： " devc
 	[ -z "$devc" ] && ssr && break
-	if [[ ! $devc =~ ^[1-7]$ ]]; then
+	if [[ ! $devc =~ ^[1-8]$ ]]; then
 		echo "输入错误! 请输入正确的数字!"
 	else
 		break	
@@ -282,5 +283,21 @@ if [[ $devc == 7 ]];then
 	if [[ $uls == 6 ]];then
 		[[ ! -e /appex/bin/serverSpeeder.sh ]] && echo "没有安装 LotServer，请检查 !" && exit 1
 		/appex/bin/serverSpeeder.sh status
+	fi
+fi
+if [[ $devc == 8 ]];then
+	cd /usr/local/SSR-Bash-Python
+	if [[ -e /root/lkl/run.sh ]];then
+		echo "你已安装过LKL"
+	else
+		echo "开始安装LKL"
+		wget -q -N --no-check-certificate https://raw.githubusercontent.com/Huiaini/UML-LKL/master/lkl-install.sh && bash lkl-install.sh
+		rm -f lkl-install.sh
+	fi
+	if [[ -d $PWD/uml-ssr-64 ]];then
+		echo "你已安装过UML"
+	else
+		echo "开始安装UML"
+		wget -q -N --no-check-certificate https://raw.githubusercontent.com/Huiaini/UML-LKL/master/uml.sh && bash uml.sh
 	fi
 fi
