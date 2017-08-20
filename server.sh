@@ -195,4 +195,5 @@ fi
 #The code by ToyoDAdoubi.GitHub:https://github.com/ToyoDAdoubi
 if [[ $serverc == 10 ]];then
 	bash /usr/local/SSR-Bash-Python/SSRStatus.sh
+	bash /usr/local/SSR-Bash-Python/server.sh
 fi
