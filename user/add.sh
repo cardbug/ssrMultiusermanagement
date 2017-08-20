@@ -317,3 +317,9 @@ echo "混淆方式: $uo1"
 echo "流量: $ut GB"
 echo "允许连接数: $uparam"
 echo "===================="
+echo ""
+echo "是否需要为该用户生成二维码？（y/n）"
+read -n 1 cyn
+if [[ $cyn == [yY] ]];then
+	bash /usr/local/SSR-Bash-Python/user/qrcode.sh u $uname
+fi

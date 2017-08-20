@@ -11,12 +11,13 @@ echo '3.删除用户'
 echo '4.修改用户'
 echo '5.显示用户流量信息'
 echo '6.显示用户名端口信息'
+echo '7.生成用户二维码'
 echo "直接回车返回上级菜单"
 
 while :; do echo
 	read -p "请选择： " userc
 	[ -z "$userc" ] && ssr && break
-	if [[ ! $userc =~ ^[1-6]$ ]]; then
+	if [[ ! $userc =~ ^[1-7]$ ]]; then
 		echo "输入错误! 请输入正确的数字!"
 	else
 		break	
@@ -75,6 +76,12 @@ fi
 
 if [[ $userc == 6 ]];then
 	python /usr/local/SSR-Bash-Python/user/show_all_user_info.py
+	echo ""
+	bash /usr/local/SSR-Bash-Python/user.sh
+fi
+
+if [[ $userc == 7 ]];then
+	bash /usr/local/SSR-Bash-Python/user/qrcode.sh
 	echo ""
 	bash /usr/local/SSR-Bash-Python/user.sh
 fi

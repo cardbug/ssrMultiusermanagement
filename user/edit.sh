@@ -30,7 +30,18 @@ else
 echo "${CFAILURE}Does not support this OS, Please contact the author! ${CEND}"
 kill -9 $$
 fi
-
+uqr(){
+	username=`python mujson_mgr.py -l -u $uid | head -n 2 | tail -n 1 | awk -F" : " '{ print $2 }'`
+	if [[ -e ~/SSRQR/$username.png ]];then
+		bash /usr/local/SSR-Bash-Python/user/qrcode.sh u $uid
+	fi
+}
+pqr(){
+	username=`python mujson_mgr.py -l -p $uid | head -n 2 | tail -n 1 | awk -F" : " '{ print $2 }'`
+	if [[ -e ~/SSRQR/$username.png ]];then
+		bash /usr/local/SSR-Bash-Python/user/qrcode.sh p $uid
+	fi
+}
 echo "1.使用用户名"
 echo "2.使用端口"
 echo ""
@@ -86,11 +97,13 @@ if [[ $ec == 1 ]];then
 		cd /usr/local/shadowsocksr
 		python mujson_mgr.py -e -u $uid -k $upass
 		echo "用户名为 $uid 的用户密码已设置成 $upass"
+		uqr
 	fi
 	if [[ $lsid == 2 ]];then
 		cd /usr/local/shadowsocksr
 		python mujson_mgr.py -e -p $uid -k $upass
 		echo "端口号为 $uid 的用户密码已设置成 $upass"
+		pqr
 	fi
 fi
 if [[ $ec == 2 ]];then
@@ -145,11 +158,13 @@ if [[ $ec == 2 ]];then
 		cd /usr/local/shadowsocksr
 		python mujson_mgr.py -e -u $uid -m $um1
 		echo "用户名为 $uid 的加密方式已切换为 $um1"
+		uqr
 	fi
 	if [[ $lsid == 2 ]];then
 		cd /usr/local/shadowsocksr
 		python mujson_mgr.py -e -p $uid -m $um1
 		echo "端口号为 $uid 的加密方式已切换为 $um1"
+		pqr
 	fi
 fi
 if [[ $ec == 3 ]];then
@@ -227,11 +242,13 @@ if [[ $ec == 3 ]];then
 		cd /usr/local/shadowsocksr
 		python mujson_mgr.py -e -u $uid -O $ux1
 		echo "用户名为 $uid 的协议方式已更改为 $ux1"
+		uqr
 	fi
 	if [[ $lsid == 2 ]];then
 		cd /usr/local/shadowsocksr
 		python mujson_mgr.py -e -p $uid -O $ux1
 		echo "端口号为 $uid 的协议方式已更改为 $ux1"
+		pqr
 	fi
 fi
 if [[ $ec == 4 ]];then
@@ -331,11 +348,13 @@ if [[ $ec == 7 ]];then
 		cd /usr/local/shadowsocksr
 		python mujson_mgr.py -e -u $uid -t $ut
 		echo "用户名为 $uid 的流量限制已改为 $ut"
+		uqr
 	fi
 	if [[ $lsid == 2 ]];then
 		cd /usr/local/shadowsocksr
 		python mujson_mgr.py -e -p $uid -t $ut
 		echo "端口号为 $uid 的流量限制已改为 $ut"
+		pqr
 	fi
 fi
 if [[ $ec == 8 ]];then
@@ -367,11 +386,13 @@ if [[ $ec == 9 ]];then
 		cd /usr/local/shadowsocksr
 		python mujson_mgr.py -e -u $uid -S $us
 		echo "用户名为 $uid 的用户端口限速已修改为 $us KB/s"
+		uqr
 	fi
 	if [[ $lsid == 2 ]];then
 		cd /usr/local/shadowsocksr
 		python mujson_mgr.py -e -p $uid -S $us
 		echo "端口号为 $uid 的用户端口限速已修改为 $us KB/s"
+		pqr
 	fi
 fi
  
@@ -389,10 +410,12 @@ if [[ $ec == 10 ]];then
 		cd /usr/local/shadowsocksr
 		python mujson_mgr.py -e -u $uid -G $uparam
 		echo "用户名为 $uid 的允许的连接数已修改为 $uparam "
+		uqr
 	fi
 	if [[ $lsid == 2 ]];then
 		cd /usr/local/shadowsocksr
 		python mujson_mgr.py -e -p $uid -G $uparam
 		echo "端口号为 $uid 的允许的连接数已修改为 $uparam "
+		pqr
 	fi
 fi
