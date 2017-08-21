@@ -54,4 +54,5 @@ fi
 
 if [[ $choice == 6 ]];then
 	bash /usr/local/SSR-Bash-Python/user/easyadd.sh
+	ssr
 fi

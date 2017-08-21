@@ -12,9 +12,11 @@ checkqr(){
 		read -s
 		echo "正在安装，通常这不需要太多时间"
 		pip -q install qrcode
-		pip -q install git+git://github.com/ojii/pymaging.git#egg=pymaging
-		pip -q install git+git://github.com/ojii/pymaging-png.git#egg=pymaging-png
+		pip -q install git+git://github.com/ojii/pymaging.git
+		pip -q install git+git://github.com/ojii/pymaging-png.git
 		if [[ -e /usr/bin/qr ]];then
+			echo "安装完成！"
+		elif [[ -e /usr/local/bin/qr ]];then
 			echo "安装完成！"
 		else
 			echo "安装失败 请检查你的Python是否正常，并尝试重新安装"
