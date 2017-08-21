@@ -158,11 +158,10 @@ if [[ ! -e ${log_file} ]];then
 		read everytime
 		if [[ -z ${everytime} ]];then
 			everytime="30"
-			if [[ ! ${everytime} =~ ^(-?|\+?)[0-9]+(\.?[0-9]+)?$ ]];then
-				echo "请输入正确的数字"
-			else
-				break
-			fi
+		elif [[ ! ${everytime} =~ ^(-?|\+?)[0-9]+(\.?[0-9]+)?$ ]];then
+			echo "请输入正确的数字"
+		else
+			break
 		fi
 	done
 	while :;do echo
@@ -244,6 +243,9 @@ if [[ $1 == conf ]];then
 fi
 if [[ $1 == reconf ]];then
 	rm -f ${log_file}
+	cd /usr/local/shadowsocksr
+	python mujson_mgr.py -d -u $uname
+	cd ${pwd}
 	main
 fi
 if [[ $1 == log ]];then
