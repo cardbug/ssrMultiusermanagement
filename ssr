@@ -3,7 +3,10 @@ export PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 
 #Check Root
 [ $(id -u) != "0" ] && { echo "Error: You must be root to run this script"; exit 1; }
-
+PID=$(ps -ef |grep -v grep | grep "bash" | grep "servercheck.sh" | grep "run" | awk '{print $2}')
+if [[ -z $PID ]];then
+	nohup bash /usr/local/SSR-Bash-Python/servercheck.sh run &
+fi
 echo "*******************"
 echo ""
 echo "欢迎使用 AR (Python Base) Bate

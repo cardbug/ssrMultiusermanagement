@@ -36,7 +36,7 @@ test_URL="https://google.com"
 Timeout="10"
 ssr_dir="/usr/local/shadowsocksr"
 ssr_local="${ssr_dir}/shadowsocks"
-log_file="${pwd}/check.log"
+log_file="/usr/local/SSR-Bash-Python/check.log"
 uname="test"
 uport="1314"
 upass=`date +%s | sha256sum | base64 | head -c 32`
@@ -204,7 +204,7 @@ runloop(){
 if [[ $1 == "" ]];then
 	echo "Power BY Stack GitHub:https://github.com/readour"
 	echo "========================================="
-	echo -e "You can running\e[32;49m servercheck.sh conf \e[0mto configure the program.\nAfter they run you should run\e[32;49m nohup servercheck.sh running \e[0mto hang up it."
+	echo -e "You can running\e[32;49m servercheck.sh conf \e[0mto configure the program.\nAfter they run you should run\e[32;49m nohup servercheck.sh run & \e[0mto hang up it."
 	echo -e "If you want to stop running this program.You should running \e[32;49m servercheck.sh stop \e[0m to stop it."
 fi
 if [[ $1 == m ]];then
