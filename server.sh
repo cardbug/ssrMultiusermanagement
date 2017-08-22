@@ -30,7 +30,71 @@ else
 echo "Does not support this OS, Please contact the author! "
 kill -9 $$
 fi
+servercheck(){
+	echo "你要做什么？"
+	echo ""
+	echo "1.启动服务"
+	echo "2.停止服务"
+	echo "3.重启服务"
+	echo "4.查看日志"
+	echo "5.重新配置"
+	while :; do echo
+		read -p "请选择： " serverch
+		[ -z "$serverch" ] && break
+		if [[ ! $serverch =~ ^[1-5]$ ]]; then
+			echo "输入错误! 请输入正确的数字!"
+		else
+			break
+		fi
+	done
 
+	if [[ $serverch == 1 ]];then
+		PID=$(ps -ef |grep -v grep | grep "bash" | grep "servercheck.sh" | grep "run" | awk '{print $2}')
+		if [[ ! -z ${PID} ]];then
+			echo "该服务已经启动，无需操作"
+			servercheck
+		else
+			nohup bash /usr/local/SSR-Bash-Python/servercheck.sh run &
+		fi
+	fi
+	if [[ $serverch == 2 ]];then
+		PID=$(ps -ef |grep -v grep | grep "bash" | grep "servercheck.sh" | grep "run" | awk '{print $2}')
+		if [[ -z ${PID} ]];then
+			echo "该进程不存在,你无法停止服务"
+		else
+			bash /usr/local/SSR-Bash-Python/servercheck.sh stop
+		fi
+	fi
+	if [[ $serverch == 3 ]];then
+		PID=$(ps -ef |grep -v grep | grep "bash" | grep "servercheck.sh" | grep "run" | awk '{print $2}')
+		if [[ -z ${PID} ]];then
+			echo "该进程不存在,你无法重启服务"
+		else
+			bash /usr/local/SSR-Bash-Python/servercheck.sh stop
+			nohup bash /usr/local/SSR-Bash-Python/servercheck.sh run &
+		fi
+	fi
+	if [[ $serverch == 4 ]];then
+		if [[ -e /usr/local/SSR-Bash-Python/check.log ]];then
+			cat /usr/local/SSR-Bash-Python/check.log
+		else
+			echo "没有找到配置文件！"
+		fi
+	fi
+	if [[ $serverch == 5 ]];then
+		echo "你将丢弃所有的日志记录数据，并进行重新配置[Y/N]"
+		read yn
+		if [[ $yn == [yY] ]];then
+			PID=$(ps -ef |grep -v grep | grep "bash" | grep "servercheck.sh" | grep "run" | awk '{print $2}')
+			if [[ ! -z ${PID} ]];then
+				kill -9 ${PID}
+			fi
+			bash /usr/local/SSR-Bash-Python/servercheck.sh reconf
+			echo "完毕请启动服务"
+			echo ""
+		fi
+	fi
+}
 echo ""
 echo "1.启动服务"
 echo "2.停止服务"
@@ -192,8 +256,6 @@ bash /usr/local/shadowsocksr/logrun.sh
 	bash /usr/local/SSR-Bash-Python/server.sh
 fi
 
-#The code by ToyoDAdoubi.GitHub:https://github.com/ToyoDAdoubi
 if [[ $serverc == 10 ]];then
-	bash /usr/local/SSR-Bash-Python/SSRStatus.sh
-	bash /usr/local/SSR-Bash-Python/server.sh
-fi
+	servercheck
+fi	
