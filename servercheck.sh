@@ -44,6 +44,8 @@ um1="chacha20"
 ux1="auth_chain_a"
 uo1="tls1.2_ticket_auth"
 uparam="1"
+filesize=`ls -l $log_file | awk '{ print $5 }'`
+maxsize="$((1024*1024))"
 
 #Function
 mades(){
@@ -93,7 +95,16 @@ rand(){
 
 dothetest(){
 	nowdate=`date '+%Y-%m-%d %H:%M:%S'`
-	echo -e "========== 开始记录测试信息[$(date '+%Y-%m-%d %H:%M:%S')]==========\n" >> ${log_file}
+	echo -e "========== 开始记录测试信息[$(date '+%Y-%m-%d %H:%M:%S')] ==========\n" >> ${log_file}
+	if [ $filesize -gt $maxsize ];then
+		echo "日志文件大小已达到上限，开始自动转储！" | tee -a ${log_file}
+		tar -cjf servercheck"`date +%Y-%m-%d_%H:%M:%S`".tar.bz2 $log_file
+		logset=`cat ${log_file} | head -n 6`
+		rm -f ${log_file}
+		echo "$logset" >> ${log_file}
+		echo -e "========== 开始记录测试信息[$(date '+%Y-%m-%d %H:%M:%S')] ==========\n" >> ${log_file}
+		echo "转储完成!"
+	fi
 	local_port=$(rand)
 	passwd=`cat ${log_file} | head -n 2 | tail -n 1 | awk -F" = " '{ print $2 }'`
 	ip=`cat ${log_file} | head -n 4 | tail -n 1 | awk -F" = " '{ print $2 }'`
@@ -108,7 +119,7 @@ dothetest(){
 		bash /usr/local/shadowsocksr/logrun.sh
 		iptables-restore < /etc/iptables.up.rules
 		echo "服务已重启!" | tee -a ${log_file}
-		echo -e "========== 记录测试信息结束[$(date '+%Y-%m-%d %H:%M:%S')]==========\n\n" >> ${log_file}
+		echo -e "========== 记录测试信息结束[$(date '+%Y-%m-%d %H:%M:%S')] ==========\n\n" >> ${log_file}
 		sleep 1m
 		dothetest
 	else
@@ -143,7 +154,7 @@ dothetest(){
 			echo "ShadowsocksR客户端 停止失败，请检查 !" | tee -a ${log_file}
 			#wall "检测到服务器在${nowdate}有一次异常记录，具体请查看日志:${log_file}"
 		fi
-		echo -e "========== 记录测试信息结束[$(date '+%Y-%m-%d %H:%M:%S')]==========\n\n" >> ${log_file}
+		echo -e "========== 记录测试信息结束[$(date '+%Y-%m-%d %H:%M:%S')] ==========\n\n" >> ${log_file}
 	fi
 }
 
@@ -232,7 +243,7 @@ if [[ $1 == stop ]];then
 fi
 if [[ $1 == hide ]];then
 	values="1"
-	nohup bash ${pwd}/servercheck.sh run
+	nohup bash ${pwd}/servercheck.sh run &
 fi
 if [[ $1 == run ]];then
 	values="1"

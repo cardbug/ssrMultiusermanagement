@@ -105,7 +105,7 @@ echo "6.修改DNS"
 echo "7.开启用户WEB面板"
 echo "8.关闭用户WEB面板"
 echo "9.开/关服务端开机启动"
-echo "10.检测服务器可用性"
+echo "10.服务器自动巡检系统"
 echo "直接回车返回上级菜单"
 
 while :; do echo
@@ -258,4 +258,5 @@ fi
 
 if [[ $serverc == 10 ]];then
 	servercheck
+	bash /usr/local/SSR-Bash-Python/server.sh
 fi	

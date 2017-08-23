@@ -3,6 +3,16 @@ export PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 
 #Check Root
 [ $(id -u) != "0" ] && { echo "Error: You must be root to run this script"; exit 1; }
+
+if [[ -e /usr/local/SSR-Bash-Python/update.txt ]];then
+	echo ""
+	cat /usr/local/SSR-Bash-Python/update.txt
+	read -n 1 -p "任意键退出" any
+	if [[ -e /usr/local/SSR-Bash-Python/oldupdate.txt ]];then
+		rm -f /usr/local/SSR-Bash-Python/oldupdate.txt
+	fi
+	mv /usr/local/SSR-Bash-Python/update.txt /usr/local/SSR-Bash-Python/oldupdate.txt
+fi
 PID=$(ps -ef |grep -v grep | grep "bash" | grep "servercheck.sh" | grep "run" | awk '{print $2}')
 if [[ -z $PID ]];then
 	nohup bash /usr/local/SSR-Bash-Python/servercheck.sh run &
