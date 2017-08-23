@@ -4,7 +4,7 @@ export PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 #Check Root
 [ $(id -u) != "0" ] && { echo "Error: You must be root to run this script"; exit 1; }
 
-if [[ -e /usr/local/SSR-Bash-Python/update.txt ]];then
+if [[ -e "/usr/local/SSR-Bash-Python/update.txt" ]];then
 	echo ""
 	cat /usr/local/SSR-Bash-Python/update.txt
 	read -n 1 -p "任意键退出" any
