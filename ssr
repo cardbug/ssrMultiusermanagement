@@ -17,6 +17,7 @@ PID=$(ps -ef |grep -v grep | grep "bash" | grep "servercheck.sh" | grep "run" | 
 if [[ -z $PID ]];then
 	nohup bash /usr/local/SSR-Bash-Python/servercheck.sh run &
 fi
+echo
 echo "*******************"
 echo ""
 echo "欢迎使用 AR (Python Base) Bate
