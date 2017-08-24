@@ -15,7 +15,9 @@ if [[ -e "/usr/local/SSR-Bash-Python/update.txt" ]];then
 fi
 PID=$(ps -ef |grep -v grep | grep "bash" | grep "servercheck.sh" | grep "run" | awk '{print $2}')
 if [[ -z $PID ]];then
-	nohup bash /usr/local/SSR-Bash-Python/servercheck.sh run &
+	if [[ -e /usr/local/SSR-Bash-Python/check.log ]];then
+		nohup bash /usr/local/SSR-Bash-Python/servercheck.sh run 2>/dev/null &
+	fi
 fi
 echo
 echo "*******************"

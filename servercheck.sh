@@ -95,6 +95,7 @@ rand(){
 
 dothetest(){
 	nowdate=`date '+%Y-%m-%d %H:%M:%S'`
+	#email=`cat ${log_file} | head -n 6 | tail -n 1 | awk -F" = " '{ print $2 }'`
 	echo -e "========== 开始记录测试信息[$(date '+%Y-%m-%d %H:%M:%S')] ==========\n" >> ${log_file}
 	if [ $filesize -gt $maxsize ];then
 		echo "日志文件大小已达到上限，开始自动转储！" | tee -a ${log_file}
@@ -114,7 +115,7 @@ dothetest(){
 	if [[ -z ${PID} ]]; then
 		echo "ShadowsocksR客户端 启动失败，无法连接到服务器!" | tee -a ${log_file}
 		echo "开始重启服务" | tee -a ${log_file}
-		#wall "检测到服务器在${nowdate}有一次异常记录，具体请查看日志:${log_file}"
+		#echo "检测到服务器在${nowdate}有一次异常记录，具体请查看日志:${log_file}" | mutt -s "[Warning]SSR-Bash-Python" ${email}
 		bash /usr/local/shadowsocksr/stop.sh
 		bash /usr/local/shadowsocksr/logrun.sh
 		iptables-restore < /etc/iptables.up.rules
@@ -138,7 +139,7 @@ dothetest(){
 					bash /usr/local/shadowsocksr/logrun.sh
 					iptables-restore < /etc/iptables.up.rules
 					echo "服务已重启!" | tee -a ${log_file}
-					#wall "检测到服务器在${nowdate}有一次异常记录，具体请查看日志:${log_file}"
+					#echo "检测到服务器在${nowdate}有一次异常记录，具体请查看日志:${log_file}" | mutt -s "[Warning]SSR-Bash-Python" ${email}
 				else
 					echo "连接成功！" | tee -a ${log_file}
 				fi
@@ -152,7 +153,7 @@ dothetest(){
 		PID=$(ps -ef |grep -v grep | grep "local.py" | grep "${local_port}" | awk '{print $2}')
 		if [[ ! -z ${PID} ]]; then
 			echo "ShadowsocksR客户端 停止失败，请检查 !" | tee -a ${log_file}
-			#wall "检测到服务器在${nowdate}有一次异常记录，具体请查看日志:${log_file}"
+			#echo "检测到服务器在${nowdate}有一次异常记录，具体请查看日志:${log_file}" | mutt -s "[Warning]SSR-Bash-Python" ${email}
 		fi
 		echo -e "========== 记录测试信息结束[$(date '+%Y-%m-%d %H:%M:%S')] ==========\n\n" >> ${log_file}
 	fi
@@ -186,8 +187,19 @@ if [[ ! -e ${log_file} ]];then
 			break
 		fi
 	done
+	#while :;do echo
+		#echo "请输入你的邮箱，用于故障通知:"
+		#read yourmail
+		#str=`echo $yourmail | gawk '/^([a-zA-Z0-9_\-\.\+]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/{print $0}'`
+		#if [[ -z $str ]];then
+		#	echo "无效的邮箱地址"
+		#else
+		#	break
+		#fi
+	#done
 	echo "#The IP = $ip" >> ${log_file}
 	echo "#The Time = ${everytime}m" >> ${log_file}
+	#echo "#Your email = ${str}" >> ${log_file}
 	echo "#############################################" >> ${log_file}
 	if [[ ${values} == 1 ]];then
 		dothetest
@@ -207,7 +219,12 @@ fi
 runloop(){
 	while :
 	do
-		main
+		if [[ -e ${log_file} ]];then
+			main
+		else
+			echo "尚未配置，退出"
+			break
+		fi
 	done
 }
 
@@ -217,14 +234,6 @@ if [[ $1 == "" ]];then
 	echo "========================================="
 	echo -e "You can running\e[32;49m servercheck.sh conf \e[0mto configure the program.\nAfter they run you should run\e[32;49m nohup servercheck.sh run & \e[0mto hang up it."
 	echo -e "If you want to stop running this program.You should running \e[32;49m servercheck.sh stop \e[0m to stop it."
-fi
-if [[ $1 == m ]];then
-	if [[ -e ${log_file} ]];then
-		main
-	else
-		echo "没有找到配置文件！"
-		exit 1
-	fi
 fi
 if [[ $1 == stop ]];then
 	thetime=`cat ${log_file} | head -n 5 | tail -n 1 | awk -F" = " '{ print $2 }'`

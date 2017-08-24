@@ -54,7 +54,7 @@ servercheck(){
 			echo "该服务已经启动，无需操作"
 			servercheck
 		else
-			nohup bash /usr/local/SSR-Bash-Python/servercheck.sh run &
+			nohup bash /usr/local/SSR-Bash-Python/servercheck.sh run 2>/dev/null &
 		fi
 	fi
 	if [[ $serverch == 2 ]];then
@@ -71,7 +71,7 @@ servercheck(){
 			echo "该进程不存在,你无法重启服务"
 		else
 			bash /usr/local/SSR-Bash-Python/servercheck.sh stop
-			nohup bash /usr/local/SSR-Bash-Python/servercheck.sh run &
+			nohup bash /usr/local/SSR-Bash-Python/servercheck.sh run 2>/dev/null &
 		fi
 	fi
 	if [[ $serverch == 4 ]];then
