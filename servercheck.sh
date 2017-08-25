@@ -115,6 +115,7 @@ dothetest(){
 	if [[ -z ${PID} ]]; then
 		echo "ShadowsocksR客户端 启动失败，无法连接到服务器!" | tee -a ${log_file}
 		echo "开始重启服务" | tee -a ${log_file}
+		export SSRcheck=Error
 		#echo "检测到服务器在${nowdate}有一次异常记录，具体请查看日志:${log_file}" | mutt -s "[Warning]SSR-Bash-Python" ${email}
 		bash /usr/local/shadowsocksr/stop.sh
 		bash /usr/local/shadowsocksr/logrun.sh
@@ -139,6 +140,7 @@ dothetest(){
 					bash /usr/local/shadowsocksr/logrun.sh
 					iptables-restore < /etc/iptables.up.rules
 					echo "服务已重启!" | tee -a ${log_file}
+					export SSRcheck=Error
 					#echo "检测到服务器在${nowdate}有一次异常记录，具体请查看日志:${log_file}" | mutt -s "[Warning]SSR-Bash-Python" ${email}
 				else
 					echo "连接成功！" | tee -a ${log_file}
@@ -153,6 +155,7 @@ dothetest(){
 		PID=$(ps -ef |grep -v grep | grep "local.py" | grep "${local_port}" | awk '{print $2}')
 		if [[ ! -z ${PID} ]]; then
 			echo "ShadowsocksR客户端 停止失败，请检查 !" | tee -a ${log_file}
+			export SSRcheck=Error
 			#echo "检测到服务器在${nowdate}有一次异常记录，具体请查看日志:${log_file}" | mutt -s "[Warning]SSR-Bash-Python" ${email}
 		fi
 		echo -e "========== 记录测试信息结束[$(date '+%Y-%m-%d %H:%M:%S')] ==========\n\n" >> ${log_file}
@@ -271,4 +274,7 @@ fi
 if [[ $1 == log ]];then
 	cat ${log_file}
 	exit 0
+fi
+if [[ $1 == test ]];then
+	dothetest
 fi
