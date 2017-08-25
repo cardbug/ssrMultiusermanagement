@@ -55,6 +55,7 @@ servercheck(){
 			servercheck
 		else
 			nohup bash /usr/local/SSR-Bash-Python/servercheck.sh run 2>/dev/null &
+			echo "服务已启动"
 		fi
 	fi
 	if [[ $serverch == 2 ]];then
@@ -72,6 +73,7 @@ servercheck(){
 		else
 			bash /usr/local/SSR-Bash-Python/servercheck.sh stop
 			nohup bash /usr/local/SSR-Bash-Python/servercheck.sh run 2>/dev/null &
+			echo "重启大成功"
 		fi
 	fi
 	if [[ $serverch == 4 ]];then
