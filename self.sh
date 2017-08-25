@@ -198,7 +198,7 @@ if [[ $choice == 5 ]];then
 	fi
 	bash /usr/local/SSR-Bash-Python/self.sh
 fi
-if [[ $choise == 6 ]];then
+if [[ $choice == 6 ]];then
 	recover
 	bash /usr/local/SSR-Bash-Python/self.sh
 fi
