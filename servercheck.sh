@@ -140,7 +140,12 @@ dothetest(){
 					bash /usr/local/shadowsocksr/logrun.sh
 					iptables-restore < /etc/iptables.up.rules
 					echo "服务已重启!" | tee -a ${log_file}
-					export SSRcheck=Error
+					Test_results=$(curl --socks5 127.0.0.1:${local_port} -k -m ${Timeout} -s "${test_URL}")
+					if [[ -z ${Test_results} ]];then
+						export SSRcheck=Error
+						echo "连接失败!" | tee -a ${log_file}
+					else
+						echo "连接成功！" | tee -a ${log_file}
 					#echo "检测到服务器在${nowdate}有一次异常记录，具体请查看日志:${log_file}" | mutt -s "[Warning]SSR-Bash-Python" ${email}
 				else
 					echo "连接成功！" | tee -a ${log_file}
@@ -276,5 +281,11 @@ if [[ $1 == log ]];then
 	exit 0
 fi
 if [[ $1 == test ]];then
-	dothetest
+	PID=$(ps -ef |grep -v grep | grep "local.py" | grep "${local_port}" | awk '{print $2}')
+	if [[ -z ${PID} ]];then
+		dothetest
+	else
+		sleep 5s
+		dothetest
+	fi
 fi
