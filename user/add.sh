@@ -40,7 +40,23 @@ read -p "输入用户名： " uname
 if [[ $uname == "" ]];then
 	bash /usr/local/SSR-Bash-Python/user.sh || exit 0
 fi
-read -p "输入端口： " uport
+while :;do
+	read -p "输入端口： " uport
+	if [[ "$uport" =~ ^(-?|\+?)[0-9]+(\.?[0-9]+)?$ ]];then
+		if [[ $uport -ge "65535" ]];then
+			echo "端口范围取值[0,65535]"
+		else
+			port=`netstat -anlt | awk '{print $4}' | sed -e '1,2d' | awk -F : '{print $NF}' | sort -n | uniq | grep '$uport'`
+			if [[ -z ${port} ]];then
+				break
+			else
+				echo "该端口号已存在，请更换!"
+			fi
+		fi
+	else
+		echo "请输入数字！"
+	fi
+done
 read -p "输入密码： " upass
 echo ""
 echo "加密方式"

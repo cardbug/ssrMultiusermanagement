@@ -33,13 +33,26 @@ fi
 #Check Root
 [ $(id -u) != "0" ] && { echo "Error: You must be root to run this script"; exit 1; }
 
+rand(){  
+    min=$1  
+    max=$(($2-$min+1))  
+    num=$(cat /dev/urandom | head -n 10 | cksum | awk -F ' ' '{print $1}')  
+    echo $(($num%$max+$min))  
+}
+
 echo "你选择了添加用户"
 echo ""
 read -p "输入用户名： " uname
 if [[ $uname == "" ]];then
 	bash /usr/local/SSR-Bash-Python/user.sh || exit 0
 fi
-uport=`head -200 /dev/urandom | cksum | awk -F" " '{ print $2 }'`
+while :;do
+	uport=$(rand 1000 65535)
+	port=`netstat -anlt | awk '{print $4}' | sed -e '1,2d' | awk -F : '{print $NF}' | sort -n | uniq | grep '$uport'`
+	if [[ -z ${port} ]];then
+		break
+	fi
+done
 read -p "输入密码： " upass
 um1="none"
 ux1="auth_chain_a"
