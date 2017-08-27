@@ -146,6 +146,7 @@ dothetest(){
 						echo "连接失败!" | tee -a ${log_file}
 					else
 						echo "连接成功！" | tee -a ${log_file}
+					fi
 					#echo "检测到服务器在${nowdate}有一次异常记录，具体请查看日志:${log_file}" | mutt -s "[Warning]SSR-Bash-Python" ${email}
 				else
 					echo "连接成功！" | tee -a ${log_file}
