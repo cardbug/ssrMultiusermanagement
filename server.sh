@@ -56,31 +56,38 @@ servercheck(){
 		else
 			nohup bash /usr/local/SSR-Bash-Python/servercheck.sh run 2>/dev/null &
 			echo "服务已启动"
+			servercheck
 		fi
 	fi
 	if [[ $serverch == 2 ]];then
 		PID=$(ps -ef |grep -v grep | grep "bash" | grep "servercheck.sh" | grep "run" | awk '{print $2}')
 		if [[ -z ${PID} ]];then
 			echo "该进程不存在,你无法停止服务"
+			servercheck
 		else
 			bash /usr/local/SSR-Bash-Python/servercheck.sh stop
+			servercheck
 		fi
 	fi
 	if [[ $serverch == 3 ]];then
 		PID=$(ps -ef |grep -v grep | grep "bash" | grep "servercheck.sh" | grep "run" | awk '{print $2}')
 		if [[ -z ${PID} ]];then
 			echo "该进程不存在,你无法重启服务"
+			servercheck
 		else
 			bash /usr/local/SSR-Bash-Python/servercheck.sh stop
 			nohup bash /usr/local/SSR-Bash-Python/servercheck.sh run 2>/dev/null &
 			echo "重启大成功"
+			servercheck
 		fi
 	fi
 	if [[ $serverch == 4 ]];then
 		if [[ -e /usr/local/SSR-Bash-Python/check.log ]];then
 			cat /usr/local/SSR-Bash-Python/check.log
+			servercheck
 		else
 			echo "没有找到配置文件！"
+			servercheck
 		fi
 	fi
 	if [[ $serverch == 5 ]];then
@@ -94,6 +101,7 @@ servercheck(){
 			bash /usr/local/SSR-Bash-Python/servercheck.sh reconf
 			echo "完毕请启动服务"
 			echo ""
+			servercheck
 		fi
 	fi
 }
