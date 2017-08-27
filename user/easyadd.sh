@@ -48,7 +48,7 @@ if [[ $uname == "" ]];then
 fi
 while :;do
 	uport=$(rand 1000 65535)
-	port=`netstat -anlt | awk '{print $4}' | sed -e '1,2d' | awk -F : '{print $NF}' | sort -n | uniq | grep '$uport'`
+	port=`netstat -anlt | awk '{print $4}' | sed -e '1,2d' | awk -F : '{print $NF}' | sort -n | uniq | grep "$uport"`
 	if [[ -z ${port} ]];then
 		break
 	fi

@@ -46,7 +46,7 @@ while :;do
 		if [[ $uport -ge "65535" ]];then
 			echo "端口范围取值[0,65535]"
 		else
-			port=`netstat -anlt | awk '{print $4}' | sed -e '1,2d' | awk -F : '{print $NF}' | sort -n | uniq | grep '$uport'`
+			port=`netstat -anlt | awk '{print $4}' | sed -e '1,2d' | awk -F : '{print $NF}' | sort -n | uniq | grep "$uport"`
 			if [[ -z ${port} ]];then
 				break
 			else
