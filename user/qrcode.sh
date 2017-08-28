@@ -85,7 +85,7 @@ fi
 qr --factory=pymaging "$ssrmsg" > $username.png
 if [[ -e "$username.png" ]];then
 	echo "链接信息：$ssrmsg"
-	echo "二维码生成成功!"
+	echo "二维码生成成功!位于${HOME}/SSRQR/${username}.png"
 else
 	echo "由于奇奇怪怪的原因，二维码未能成功生成"
 fi
