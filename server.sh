@@ -177,6 +177,15 @@ if [[ $serverc == 6 ]];then
 fi
 
 if [[ $serverc == 7 ]];then
+	P_V=`python -V 2>&1 | awk '{print $2}'`
+	P_V1=`python -V 2>&1 | awk '{print $2}' | awk -F '.' '{print $1}'`
+	if [[ ${P_V1} == 3 ]];then
+		echo "你当前的python版本不支持此功能"
+		echo "当前版本：${P_V} ,请降级至2.x版本"
+		echo ""
+		bash /usr/local/SSR-Bash-Python/server.sh
+		exit 1
+	fi
 	while :; do echo
 		read -p "请输入自定义的WEB端口：" cgiport
 		if [[ "$cgiport" =~ ^(-?|\+?)[0-9]+(\.?[0-9]+)?$ ]];then

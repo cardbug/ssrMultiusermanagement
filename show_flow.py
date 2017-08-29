@@ -26,4 +26,3 @@ for x in json:
   print "%s\t%s\t%d%s\t\t%d%s" %(x[u"user"],x[u"port"],d_int,d_unit,transfer_enable_int,transfer_unit)
 
 f.close();
-

@@ -75,7 +75,14 @@ if [[ $userc == 5 ]];then
 fi
 
 if [[ $userc == 6 ]];then
-	python /usr/local/SSR-Bash-Python/user/show_all_user_info.py
+	P_V=`python -V 2>&1 | awk '{print $2}'`
+	P_V1=`python -V 2>&1 | awk '{print $2}' | awk -F '.' '{print $1}'`
+	if [[ ${P_V1} == 3 ]];then
+		echo "你当前的python版本不支持此功能"
+		echo "当前版本：${P_V} ,请降级至2.x版本"
+	else
+		python /usr/local/SSR-Bash-Python/user/show_all_user_info.py
+	fi
 	echo ""
 	bash /usr/local/SSR-Bash-Python/user.sh
 fi
