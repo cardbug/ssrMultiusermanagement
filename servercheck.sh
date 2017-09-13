@@ -44,7 +44,6 @@ um1="chacha20"
 ux1="auth_chain_a"
 uo1="tls1.2_ticket_auth"
 uparam="1"
-filesize=`ls -l $log_file | awk '{ print $5 }'`
 maxsize="$((1024*1024))"
 
 #Function
@@ -95,6 +94,7 @@ rand(){
 
 dothetest(){
 	nowdate=`date '+%Y-%m-%d %H:%M:%S'`
+	filesize=`ls -l $log_file | awk '{ print $5 }'`
 	#email=`cat ${log_file} | head -n 6 | tail -n 1 | awk -F" = " '{ print $2 }'`
 	echo -e "========== 开始记录测试信息[$(date '+%Y-%m-%d %H:%M:%S')] ==========\n" >> ${log_file}
 	if [ $filesize -gt $maxsize ];then
