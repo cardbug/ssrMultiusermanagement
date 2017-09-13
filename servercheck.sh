@@ -93,6 +93,10 @@ rand(){
 }
 
 dothetest(){
+        if [[ ! -e ${log_file} ]];then
+	        echo "配置文件不存在，失败！"
+                exit 1
+        fi
 	nowdate=`date '+%Y-%m-%d %H:%M:%S'`
 	filesize=`ls -l $log_file | awk '{ print $5 }'`
 	#email=`cat ${log_file} | head -n 6 | tail -n 1 | awk -F" = " '{ print $2 }'`
