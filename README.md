@@ -1,2 +1,2 @@
-## The project was deleted. 
-## Please find a new replacement. 
+**_The project was deleted._**
+**_Please find a new replacement._** 
