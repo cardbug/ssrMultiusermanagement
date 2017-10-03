@@ -1,4 +1,0 @@
-language: bash
-
-install:
-  - sudo bash install.sh develop
