@@ -4,6 +4,33 @@ export PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 #Check Root
 [ $(id -u) != "0" ] && { echo "Error: You must be root to run this script"; exit 1; }
 
+#Check OS
+if [ -n "$(grep 'Aliyun Linux release' /etc/issue)" -o -e /etc/redhat-release ];then
+OS=CentOS
+[ -n "$(grep ' 7\.' /etc/redhat-release)" ] && CentOS_RHEL_version=7
+[ -n "$(grep ' 6\.' /etc/redhat-release)" -o -n "$(grep 'Aliyun Linux release6 15' /etc/issue)" ] && CentOS_RHEL_version=6
+[ -n "$(grep ' 5\.' /etc/redhat-release)" -o -n "$(grep 'Aliyun Linux release5' /etc/issue)" ] && CentOS_RHEL_version=5
+elif [ -n "$(grep 'Amazon Linux AMI release' /etc/issue)" -o -e /etc/system-release ];then
+OS=CentOS
+CentOS_RHEL_version=6
+elif [ -n "$(grep bian /etc/issue)" -o "$(lsb_release -is 2>/dev/null)" == 'Debian' ];then
+OS=Debian
+[ ! -e "$(which lsb_release)" ] && { apt-get -y update; apt-get -y install lsb-release; clear; }
+Debian_version=$(lsb_release -sr | awk -F. '{print $1}')
+elif [ -n "$(grep Deepin /etc/issue)" -o "$(lsb_release -is 2>/dev/null)" == 'Deepin' ];then
+OS=Debian
+[ ! -e "$(which lsb_release)" ] && { apt-get -y update; apt-get -y install lsb-release; clear; }
+Debian_version=$(lsb_release -sr | awk -F. '{print $1}')
+elif [ -n "$(grep Ubuntu /etc/issue)" -o "$(lsb_release -is 2>/dev/null)" == 'Ubuntu' -o -n "$(grep 'Linux Mint' /etc/issue)" ];then
+OS=Ubuntu
+[ ! -e "$(which lsb_release)" ] && { apt-get -y update; apt-get -y install lsb-release; clear; }
+Ubuntu_version=$(lsb_release -sr | awk -F. '{print $1}')
+[ -n "$(grep 'Linux Mint 18' /etc/issue)" ] && Ubuntu_version=16
+else
+echo "Does not support this OS, Please contact the author! "
+kill -9 $$
+fi
+
 echo ""
 echo '1.一键添加用户'
 echo '2.添加用户'
@@ -11,7 +38,8 @@ echo '3.删除用户'
 echo '4.修改用户'
 echo '5.显示用户流量信息'
 echo '6.显示用户名端口信息'
-echo '7.生成用户二维码'
+echo '7.查看端口用户连接状况'
+echo '8.生成用户二维码'
 echo "直接回车返回上级菜单"
 
 while :; do echo
@@ -88,6 +116,62 @@ if [[ $userc == 6 ]];then
 fi
 
 if [[ $userc == 7 ]];then
+	read -p "请输入用户端口号:  " uid
+	if [[ "$uid" =~ ^(-?|\+?)[0-9]+(\.?[0-9]+)?$ ]];then
+		port=`netstat -anlt | awk '{print $4}' | sed -e '1,2d' | awk -F : '{print $NF}' | sort -n | uniq | grep "$uid"`
+		if [[ -z ${port} ]];then
+			echo "该端口号不存在"
+			sleep 2s
+			bash /usr/local/SSR-Bash-Python/user.sh
+		else
+			n=$(netstat -nt | grep :${uid} | grep  "ESTABLISHED" | wc -l)
+			echo -e "当前端口号 \e[41;37m${uid}\e[0m 共有 \e[42;37m${n}\e[0m 位用户连接"
+			for ips in `netstat -ntu | grep :${uid} | grep  "ESTABLISHED" | awk '{print $5}' | cut -d : -f 1 | sort -u`
+			do
+				curl ip.cn/${ips}
+			done
+			echo "你可以输入IP地址，将其加入黑名单，这将不能撤销（按回车键返回）"
+			while : 
+			do
+				read ip
+				if [[ -z ${ip} ]];then
+					break
+				fi
+				regex="\b(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[1-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[1-9])\b"
+				ckStep2=$(echo $ip | egrep $regex | wc -l)
+				if [[ $ckStep2 -eq 0 ]];then
+					echo "无效的ip地址"
+					echo "请重新输入"
+				else
+					break
+				fi
+			done
+			if [[ -z ${ip} ]];then
+				bash /usr/local/SSR-Bash-Python/user.sh
+				exit 0
+			fi
+			if [[ ${OS} =~ ^Ubuntu$|^Debian$ ]];then
+				iptables-restore < /etc/iptables.up.rules
+				iptables -A INPUT -s ${ip} -j DROP
+				iptables-save > /etc/iptables.up.rules
+			fi
+			if [[ ${OS} == CentOS ]];then
+				if [[ $CentOS_RHEL_version == 7 ]];then
+					iptables-restore < /etc/iptables.up.rules
+					iptables -A INPUT -s ${ip} -j DROP
+					iptables-save > /etc/iptables.up.rules
+				else
+					iptables -A INPUT -s ${ip} -j DROP
+					/etc/init.d/iptables save
+					/etc/init.d/iptables restart
+				fi
+			fi
+		fi
+	fi
+	bash /usr/local/SSR-Bash-Python/user.sh
+fi
+
+if [[ $userc == 8 ]];then
 	bash /usr/local/SSR-Bash-Python/user/qrcode.sh
 	echo ""
 	bash /usr/local/SSR-Bash-Python/user.sh
