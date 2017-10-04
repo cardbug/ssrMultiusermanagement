@@ -150,21 +150,30 @@ if [[ $userc == 7 ]];then
 				bash /usr/local/SSR-Bash-Python/user.sh
 				exit 0
 			fi
-			if [[ ${OS} =~ ^Ubuntu$|^Debian$ ]];then
-				iptables-restore < /etc/iptables.up.rules
-				iptables -A INPUT -s ${ip} -j DROP
-				iptables-save > /etc/iptables.up.rules
-			fi
-			if [[ ${OS} == CentOS ]];then
-				if [[ $CentOS_RHEL_version == 7 ]];then
+			rsum=`date +%s%N | md5sum | head -c 6`
+			echo -e "在下面输入\e[31;49m $rsum \e[0m表示您确定将IP：${ip}加入黑名单,这目前是不能恢复的"
+			read -n 6 -p "请输入： " choise
+			if [[ $choise == $rsum ]];then
+				if [[ ${OS} =~ ^Ubuntu$|^Debian$ ]];then
 					iptables-restore < /etc/iptables.up.rules
 					iptables -A INPUT -s ${ip} -j DROP
 					iptables-save > /etc/iptables.up.rules
-				else
-					iptables -A INPUT -s ${ip} -j DROP
-					/etc/init.d/iptables save
-					/etc/init.d/iptables restart
 				fi
+				if [[ ${OS} == CentOS ]];then
+					if [[ $CentOS_RHEL_version == 7 ]];then
+						iptables-restore < /etc/iptables.up.rules
+						iptables -A INPUT -s ${ip} -j DROP
+						iptables-save > /etc/iptables.up.rules
+					else
+						iptables -A INPUT -s ${ip} -j DROP
+						/etc/init.d/iptables save
+						/etc/init.d/iptables restart
+					fi
+				fi
+			else
+				echo "输入错误"
+				sleep 2s
+				bash /usr/local/SSR-Bash-Python/user.sh
 			fi
 		fi
 	fi
