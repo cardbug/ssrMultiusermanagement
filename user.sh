@@ -150,6 +150,14 @@ if [[ $userc == 7 ]];then
 				bash /usr/local/SSR-Bash-Python/user.sh
 				exit 0
 			fi
+			banip=$(iptables --list-rules | grep 'DROP' | grep -E -o "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)" | grep "$ip")
+			if [[ ! -z ${banip} ]];then
+				echo "IP地址 ${ip} 已存在于禁封列表，请勿再次执行！"
+				echo "当前封禁列表:"
+				iptables --list-rules | grep 'DROP' | grep -E -o "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)"
+				bash /usr/local/SSR-Bash-Python/user.sh
+				exit 0
+			fi
 			rsum=`date +%s%N | md5sum | head -c 6`
 			echo -e "在下面输入\e[31;49m $rsum \e[0m表示您确定将IP：${ip}加入黑名单,这目前是不能恢复的"
 			read -n 6 -p "请输入： " choise
@@ -170,10 +178,11 @@ if [[ $userc == 7 ]];then
 						/etc/init.d/iptables restart
 					fi
 				fi
+				echo "当前封禁列表:"
+				iptables --list-rules | grep 'DROP' | grep -E -o "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)"
 			else
 				echo "输入错误"
 				sleep 2s
-				bash /usr/local/SSR-Bash-Python/user.sh
 			fi
 		fi
 	fi
