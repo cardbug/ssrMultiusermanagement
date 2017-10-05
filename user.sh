@@ -124,7 +124,7 @@ if [[ $userc == 7 ]];then
 			sleep 2s
 			bash /usr/local/SSR-Bash-Python/user.sh
 		else
-			n=$(netstat -nt | grep :${uid} | grep  "ESTABLISHED" | wc -l)
+			n=$(netstat -ntu | grep :${uid} | grep  "ESTABLISHED" | awk '{print $5}' | cut -d : -f 1 | sort -u | wc -l)
 			echo -e "当前端口号 \e[41;37m${uid}\e[0m 共有 \e[42;37m${n}\e[0m 位用户连接"
 			for ips in `netstat -ntu | grep :${uid} | grep  "ESTABLISHED" | awk '{print $5}' | cut -d : -f 1 | sort -u`
 			do
