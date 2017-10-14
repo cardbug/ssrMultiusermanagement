@@ -44,7 +44,10 @@ echo "直接回车返回上级菜单"
 
 while :; do echo
 	read -p "请选择： " userc
-	[ -z "$userc" ] && ssr && break
+        if [[ -z "$userc" ]];then  
+                ssr
+                break
+        fi
 	if [[ ! $userc =~ ^[1-8]$ ]]; then
 		echo "输入错误! 请输入正确的数字!"
 	else
@@ -194,6 +197,4 @@ if [[ $userc == 8 ]];then
 	echo ""
 	bash /usr/local/SSR-Bash-Python/user.sh
 fi
-
-bash /usr/local/bin/ssr
 exit 0
