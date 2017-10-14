@@ -197,5 +197,5 @@ fi
 
 if [[ -z ${userc} ]];then
         ssr
-	
-	
+        exit 0
+fi
