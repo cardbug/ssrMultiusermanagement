@@ -194,3 +194,8 @@ if [[ $userc == 8 ]];then
 	echo ""
 	bash /usr/local/SSR-Bash-Python/user.sh
 fi
+
+if [[ -z ${userc} ]];then
+        ssr
+	
+	
