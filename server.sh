@@ -123,7 +123,7 @@ while :; do echo
 	read -p "请选择： " serverc
 	[ -z "$serverc" ] && ssr && break
 	if [[ ! $serverc =~ ^[1-9]$ ]]; then
-		if [[ $serverc == [10|11] ]]; then
+		if [[ $serverc == 10 ]]||[[ $serverc == 11 ]]; then
 			break
 		fi
 		echo "输入错误! 请输入正确的数字!"
