@@ -174,14 +174,14 @@ fi
 # Main
 clear
 next
-echo "IP地址               : $IP"
-echo "服务提供商           : $IPaddr"
 echo "CPU模块              : $cname"
 echo "核心数               : $cores"
 echo "CPU主频              : $freq MHz"
 echo "磁盘总空间           : $disk_total_size GB ($disk_used_size GB 已用)"
 echo "内存总空间           : $tram MB ($uram MB 已用)"
 echo "虚拟内存空间         : $swap MB ($uswap MB 已用)"
+echo "IP地址               : $IP"
+echo "服务提供商           : $IPaddr"
 echo "系统运行时间         : $up"
 echo "平均负荷             : $load"
 echo "系统                 : $opsy"
