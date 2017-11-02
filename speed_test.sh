@@ -20,6 +20,13 @@ GREEN='\033[0;32m'
 YELLOW='\033[0;33m'
 PLAIN='\033[0m'
 
+# Install SpeedTest
+speedtest --help 1>/dev/null 2>&1
+if [[ ! $? == 0 ]];then
+    pip -q install git+https://github.com/sivel/speedtest-cli.git
+fi
+
+# Main
 get_opsy() {
     [ -f /etc/redhat-release ] && awk '{print ($1,$3~/^[0-9]/?$3:$4)}' /etc/redhat-release && return
     [ -f /etc/os-release ] && awk -F'[= "]' '/PRETTY_NAME/{print $3,$4,$5}' /etc/os-release && return
