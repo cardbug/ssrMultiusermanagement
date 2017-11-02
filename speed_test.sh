@@ -22,7 +22,7 @@ PLAIN='\033[0m'
 
 # Install SpeedTest
 speedtest --help 1>/dev/null 2>&1
-if [[ ! $? == 0 ]];then
+if [[ "$?" != "0" ]];then
     pip -q install git+https://github.com/sivel/speedtest-cli.git
 fi
 
