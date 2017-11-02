@@ -137,7 +137,7 @@ calc_disk() {
 
 speed_china() {
     echo "----- ${2} -----"
-    speedtest --simple --server ${1} | sed 's/Ping/延迟/g' | sed 's/Download/下载/g' | sed 's/Upload/上传/g'
+    speedtest --simple --server ${1} --timeout 3 | sed 's/Ping/延迟/g' | sed 's/Download/下载/g' | sed 's/Upload/上传/g'
 }
 
 # Init
