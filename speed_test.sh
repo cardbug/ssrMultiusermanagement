@@ -207,7 +207,7 @@ next
 echo "----- 本地节点 -----"
 speedtest --simple | sed 's/Ping/延迟/g' | sed 's/Download/下载/g' | sed 's/Upload/上传/g'
 speed_china 6715 "浙江移动"
-speed_china 3927 "江苏移动"
+speed_china 4575 "四川移动"
 speed_china 5485 "湖北联通"
 speed_china 5300 "浙江联通"
 speed_china 3633 "上海电信"
