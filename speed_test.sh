@@ -58,10 +58,9 @@ fi
 virt-what 1>/dev/null 2>&1
 if [[ "$?" != "0" ]];then
 	if [ "$OS" == 'CentOS' ]; then
-		yum -y install virt-what
+		yum -q -y install virt-what
 	else
-		apt-get update
-		apt-get -y install virt-what
+		apt-get -y install virt-what 1>/dev/null 2>&1
 	fi
 fi
 
