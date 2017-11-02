@@ -9,9 +9,37 @@
 # URL: https://teddysun.com/444.html
 #
 
+# Check wget
 if  [ ! -e '/usr/bin/wget' ]; then
     echo "Error: wget command not found. You must be install wget command at first."
     exit 1
+fi
+
+# Check OS
+if [ -n "$(grep 'Aliyun Linux release' /etc/issue)" -o -e /etc/redhat-release ];then
+    OS=CentOS
+    [ -n "$(grep ' 7\.' /etc/redhat-release)" ] && CentOS_RHEL_version=7
+    [ -n "$(grep ' 6\.' /etc/redhat-release)" -o -n "$(grep 'Aliyun Linux release6 15' /etc/issue)" ] && CentOS_RHEL_version=6
+    [ -n "$(grep ' 5\.' /etc/redhat-release)" -o -n "$(grep 'Aliyun Linux release5' /etc/issue)" ] && CentOS_RHEL_version=5
+elif [ -n "$(grep 'Amazon Linux AMI release' /etc/issue)" -o -e /etc/system-release ];then
+    OS=CentOS
+    CentOS_RHEL_version=6
+elif [ -n "$(grep bian /etc/issue)" -o "$(lsb_release -is 2>/dev/null)" == 'Debian' ];then
+    OS=Debian
+    [ ! -e "$(which lsb_release)" ] && { apt-get -y update; apt-get -y install lsb-release; clear; }
+    Debian_version=$(lsb_release -sr | awk -F. '{print $1}')
+elif [ -n "$(grep Deepin /etc/issue)" -o "$(lsb_release -is 2>/dev/null)" == 'Deepin' ];then
+    OS=Debian
+    [ ! -e "$(which lsb_release)" ] && { apt-get -y update; apt-get -y install lsb-release; clear; }
+    Debian_version=$(lsb_release -sr | awk -F. '{print $1}')
+elif [ -n "$(grep Ubuntu /etc/issue)" -o "$(lsb_release -is 2>/dev/null)" == 'Ubuntu' -o -n "$(grep 'Linux Mint' /etc/issue)" ];then
+    OS=Ubuntu
+    [ ! -e "$(which lsb_release)" ] && { apt-get -y update; apt-get -y install lsb-release; clear; }
+    Ubuntu_version=$(lsb_release -sr | awk -F. '{print $1}')
+    [ -n "$(grep 'Linux Mint 18' /etc/issue)" ] && Ubuntu_version=16
+else
+    echo "Does not support this OS, Please contact the author! "
+    kill -9 $$
 fi
 
 # Colors
@@ -24,6 +52,17 @@ PLAIN='\033[0m'
 speedtest --help 1>/dev/null 2>&1
 if [[ "$?" != "0" ]];then
     pip -q install git+https://github.com/sivel/speedtest-cli.git
+fi
+
+# Install virt-what
+virt-what 1>/dev/null 2>&1
+if [[ "$?" != "0" ]];then
+	if [ "$OS" == 'CentOS' ]; then
+		yum -y install virt-what
+	else
+		apt-get update
+		apt-get -y install virt-what
+	fi
 fi
 
 # Main
@@ -102,6 +141,10 @@ speed_china() {
     speedtest --simple --server ${1} | sed 's/Ping/延迟/g' | sed 's/Download/下载/g' | sed 's/Upload/上传/g'
 }
 
+# Init
+echo "根据你的网络状况，这大概需要5分钟完成"
+echo "该测速数据仅供参考"
+
 cname=$( awk -F: '/model name/ {name=$2} END {print name}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//' )
 cores=$( awk -F: '/model name/ {core++} END {print core}' /proc/cpuinfo )
 freq=$( awk -F: '/cpu MHz/ {freq=$2} END {print freq}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//' )
@@ -120,9 +163,19 @@ disk_size1=($( LANG=C df -hPl | grep -wvE '\-|none|tmpfs|devtmpfs|by-uuid|chroot
 disk_size2=($( LANG=C df -hPl | grep -wvE '\-|none|tmpfs|devtmpfs|by-uuid|chroot|Filesystem' | awk '{print $3}' ))
 disk_total_size=$( calc_disk ${disk_size1[@]} )
 disk_used_size=$( calc_disk ${disk_size2[@]} )
+vm=$( virt-what )
+IP=$(curl -s myip.ipip.net | awk -F ' ' '{print $2}' | awk -F '：' '{print $2}')
+IPaddr=$(curl -s myip.ipip.net | awk -F '：' '{print $3}')
+if [ "$IP" == "" ]; then
+    IP=$(curl -s ip.cn | awk -F ' ' '{print $2}' | awk -F '：' '{print $2}')
+	IPaddr=$(curl -s ip.cn | awk -F '：' '{print $3}')	
+fi
 
+# Main
 clear
 next
+echo "IP地址               : $IP"
+echo "服务提供商           : $IPaddr"
 echo "CPU模块              : $cname"
 echo "核心数               : $cores"
 echo "CPU主频              : $freq MHz"
@@ -133,6 +186,7 @@ echo "系统运行时间         : $up"
 echo "平均负荷             : $load"
 echo "系统                 : $opsy"
 echo "架构                 : $arch ($lbit Bit)"
+echo "虚拟化               : $vm"
 echo "内核版本             : $kern"
 next
 io1=$( io_test )
@@ -155,7 +209,7 @@ echo "----- 本地节点 -----"
 speedtest --simple | sed 's/Ping/延迟/g' | sed 's/Download/下载/g' | sed 's/Upload/上传/g'
 speed_china 6715 "浙江移动"
 speed_china 3927 "江苏移动"
-speed_china 5145 "北京联通"
+speed_china 5485 "湖北联通"
 speed_china 5300 "浙江联通"
 speed_china 3633 "上海电信"
 speed_china 4751 "北京电信"
