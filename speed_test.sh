@@ -97,6 +97,11 @@ calc_disk() {
     echo ${total_size}
 }
 
+speed_china() {
+    echo "----- ${2} -----"
+    speedtest --simple --server ${1} | sed 's/Ping/延迟/g' | sed 's/Download/下载/g' | sed 's/Upload/上传/g'
+}
+
 cname=$( awk -F: '/model name/ {name=$2} END {print name}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//' )
 cores=$( awk -F: '/model name/ {core++} END {print core}' /proc/cpuinfo )
 freq=$( awk -F: '/cpu MHz/ {freq=$2} END {print freq}' /proc/cpuinfo | sed 's/^[ \t]*//;s/[ \t]*$//' )
@@ -145,6 +150,15 @@ ioraw3=$( echo $io3 | awk 'NR==1 {print $1}' )
 ioall=$( awk 'BEGIN{print '$ioraw1' + '$ioraw2' + '$ioraw3'}' )
 ioavg=$( awk 'BEGIN{printf "%.1f", '$ioall' / 3}' )
 echo "平均 I/O 速度         : $ioavg MB/s"
+next
+echo "----- 本地节点 -----"
+speedtest --simple | sed 's/Ping/延迟/g' | sed 's/Download/下载/g' | sed 's/Upload/上传/g'
+speed_china 6715 "浙江移动"
+speed_china 3927 "江苏移动"
+speed_china 5145 "北京联通"
+speed_china 5300 "浙江联通"
+speed_china 3633 "上海电信"
+speed_china 4751 "北京电信"
 next
 printf "%-32s%-24s%-14s\n" "节点名称" "    IPv4地址" "      下载速度"
 speed && next
