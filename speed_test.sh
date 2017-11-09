@@ -51,17 +51,29 @@ PLAIN='\033[0m'
 # Install SpeedTest
 speedtest --help 1>/dev/null 2>&1
 if [[ "$?" != "0" ]];then
-    pip -q install git+https://github.com/sivel/speedtest-cli.git
+    echo "检测到你未安装测速模块，输入 y 表示你确认安装这个模块，输入其它将跳过安装（这将影响部分结果的显示）"
+    read -n 1 yn
+    if [[ ${yn} == [Yy] ]];then
+        echo "开始安装!"
+        pip -q install git+https://github.com/sivel/speedtest-cli.git
+        echo "安装完成"
+    fi
 fi
 
 # Install virt-what
 virt-what 1>/dev/null 2>&1
 if [[ "$?" != "0" ]];then
+    echo "检测到你未安装虚拟环境检测模块，输入 y 表示你确认安装该模块，输入其它将跳过安装（这将影响部分结果的显示）"
+    read -n 1 yn
+    if [[ ${yn} == [Yy] ]];then
+        echo "开始安装!"
 	if [ "$OS" == 'CentOS' ]; then
 		yum -q -y install virt-what
 	else
 		apt-get -y install virt-what 1>/dev/null 2>&1
 	fi
+	echo "安装完成"
+    fi
 fi
 
 # Main
@@ -136,8 +148,7 @@ calc_disk() {
 }
 
 speed_china() {
-    echo "----- ${2} -----"
-    speedtest --simple --server ${1} --timeout 3 | sed 's/Ping/延迟/g' | sed 's/Download/下载/g' | sed 's/Upload/上传/g'
+    echo "----- ${2} -----" && speedtest --simple --server ${1} --timeout 3 | sed 's/Ping/延迟/g' | sed 's/Download/下载/g' | sed 's/Upload/上传/g' 2>/dev/null || echo "无测速模块" 
 }
 
 # Init
@@ -162,7 +173,7 @@ disk_size1=($( LANG=C df -hPl | grep -wvE '\-|none|tmpfs|devtmpfs|by-uuid|chroot
 disk_size2=($( LANG=C df -hPl | grep -wvE '\-|none|tmpfs|devtmpfs|by-uuid|chroot|Filesystem' | awk '{print $3}' ))
 disk_total_size=$( calc_disk ${disk_size1[@]} )
 disk_used_size=$( calc_disk ${disk_size2[@]} )
-vm=$( virt-what )
+vm=$( virt-what 2>/dev/null || echo "未知" )
 IP=$(curl -s myip.ipip.net | awk -F ' ' '{print $2}' | awk -F '：' '{print $2}')
 IPaddr=$(curl -s myip.ipip.net | awk -F '：' '{print $3}')
 if [ "$IP" == "" ]; then
@@ -205,7 +216,7 @@ ioavg=$( awk 'BEGIN{printf "%.1f", '$ioall' / 3}' )
 echo "平均 I/O 速度         : $ioavg MB/s"
 next
 echo "----- 本地节点 -----"
-speedtest --simple | sed 's/Ping/延迟/g' | sed 's/Download/下载/g' | sed 's/Upload/上传/g'
+speedtest --simple | sed 's/Ping/延迟/g' | sed 's/Download/下载/g' | sed 's/Upload/上传/g' 2>/dev/null || echo "无测速模块" 
 speed_china 6715 "浙江移动"
 speed_china 4575 "四川移动"
 speed_china 5485 "湖北联通"
