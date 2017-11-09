@@ -220,7 +220,7 @@ speedtest --simple | sed 's/Ping/延迟/g' | sed 's/Download/下载/g' | sed 's/
 speed_china 6715 "浙江移动"
 speed_china 4575 "四川移动"
 speed_china 5485 "湖北联通"
-speed_china 5300 "浙江联通"
+speed_china 5131 "河南联通"
 speed_china 3633 "上海电信"
 speed_china 4751 "北京电信"
 next
